@@ -13,6 +13,7 @@ OmegaUp.on('ready', () => {
   let difficulty = 'all';
   let quality = 'onlyQualityProblems';
   let query = '';
+  let excludedTags: string[] = [];
   if (queryString) {
     const urlParams = new URLSearchParams(queryString);
     if (urlParams.get('sort_order')) {
@@ -51,6 +52,7 @@ OmegaUp.on('ready', () => {
         query = queryParam;
       }
     }
+    excludedTags = urlParams.getAll('excluded_tag[]');
   }
   new Vue({
     el: '#main-container',
@@ -64,6 +66,7 @@ OmegaUp.on('ready', () => {
           problems: payload.problems,
           loggedIn: payload.loggedIn,
           selectedTags: payload.selectedTags,
+          excludedTags: excludedTags,
           pagerItems: payload.pagerItems,
           wizardTags: payload.tagData,
           language: payload.language,
@@ -85,6 +88,7 @@ OmegaUp.on('ready', () => {
             difficulty: string,
             quality: string,
             tag: string[],
+            excludedTag: string[],
           ): void => {
             const queryParameters = {
               language,
@@ -94,6 +98,7 @@ OmegaUp.on('ready', () => {
               difficulty,
               quality,
               tag,
+              excluded_tag: excludedTag,
             };
             window.location.replace(
               `/problem/collection/${payload.level}/?${ui.buildURLQuery(
